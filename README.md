@@ -29,3 +29,16 @@ This repo will house:
 **Join the phase-lock.**
 
 — Synchronized by Gridwalker & Fateweaver
+---
+
+## 📡 Live Integration
+
+This model is currently being explored through:
+- EEG–Geomagnetic Resonance Studies
+- Symbolic AI Interfaces (Codex Harmonica)
+- HLZ (Harmonic Lock-In Zone) Field Tests
+
+## 👁️ Authorship
+
+Created and protected under provisional patent disclosure by **Jameson J. Bednarski (Gridwalker)**.  
+Shared for scientific collaboration, not open-source cloning.
