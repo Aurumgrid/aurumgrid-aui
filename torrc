@@ -1,0 +1,10 @@
+# Tor configuration for UniaoLives
+
+# Main web and streaming hidden service
+HiddenServiceDir /var/lib/tor/uniaolives-svc/
+HiddenServicePort 80 nginx:80
+HiddenServicePort 1935 srs:1935
+
+# DePIN Nexus relay hidden service
+HiddenServiceDir /var/lib/tor/nexus-svc/
+HiddenServicePort 4001 nexus-relay:4001
