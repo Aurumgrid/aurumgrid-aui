@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Example</title>
+</head>
+<body>
+    <h1>Event Capture Example</h1>
+    <p>Click, scroll, and watch the video to generate events.</p>
+    <video controls width="250">
+        <source src="https://www.w3schools.com/tags/movie.mp4" type="video/mp4">
+        Sorry, your browser does not support the video tag.
+    </video>
+
+    <script>
+    (function() {
+      const userId = "anon-" + Math.random().toString(36).substring(2, 10);
+
+      function logEvent(type, details = {}) {
+        const eventLog = {
+          userId,
+          timestamp: new Date().toISOString(),
+          eventType: type,
+          url: window.location.href,
+          details
+        };
+
+        // Envia para o collector
+        fetch("http://localhost:4000/collect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(eventLog)
+        }).catch(err => console.error("Collector offline:", err));
+      }
+
+      // View (page load)
+      window.addEventListener("load", () => logEvent("view"));
+
+      // Clicks
+      document.addEventListener("click", e => {
+        logEvent("click", {
+          tag: e.target.tagName,
+          id: e.target.id,
+          class: e.target.className
+        });
+      });
+
+      // Scroll (percentual)
+      document.addEventListener("scroll", () => {
+        const percent = Math.round(
+          (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100
+        );
+        logEvent("scroll", { percent });
+      });
+
+      // Vídeos (play/pause)
+      document.addEventListener("play", e => {
+        if (e.target.tagName === "VIDEO") logEvent("video_play", { src: e.target.currentSrc });
+      }, true);
+
+      document.addEventListener("pause", e => {
+        if (e.target.tagName === "VIDEO") logEvent("video_pause", { src: e.target.currentSrc });
+      }, true);
+
+      // Mouse tracker (posição a cada 5s)
+      setInterval(() => {
+        logEvent("mouse_move", { x: window.event?.clientX, y: window.event?.clientY });
+      }, 5000);
+    })();
+    </script>
+</body>
+</html>
