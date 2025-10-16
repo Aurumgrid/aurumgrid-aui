@@ -1,0 +1,28 @@
+# docker-compose.twitch-tor.yml
+version: "3.9"
+services:
+  tor:
+    image: dperson/tor
+    restart: unless-stopped
+    volumes:
+      - ./torrc:/etc/tor/torrc:ro
+      - tor-keys:/var/lib/tor
+    networks:
+      - tnet
+
+  twitch-bridge:
+    build: .
+    env_file: .env
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - tnet
+    depends_on:
+      - tor
+
+networks:
+  tnet:
+    internal: true
+
+volumes:
+  tor-keys:
