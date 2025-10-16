@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  grafana:
+    volumes:
+      - ./grafana-secrets/grafana.crt:/etc/ssl/certs/grafana.crt:ro
+      - ./grafana-secrets/grafana.key:/etc/ssl/private/grafana.key:ro
+    environment:
+      - GF_SERVER_PROTOCOL=https
+      - GF_SERVER_CERT_FILE=/etc/ssl/certs/grafana.crt
+      - GF_SERVER_CERT_KEY=/etc/ssl/private/grafana.key
+
+  prometheus:
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.config.file=/etc/prometheus/secrets/web-config.yml'
+    volumes:
+      - ./prometheus-secrets/prometheus.crt:/etc/ssl/certs/prometheus.crt:ro
+      - ./prometheus-secrets/prometheus.key:/etc/ssl/private/prometheus.key:ro
+      - ./web-config.yml:/etc/prometheus/secrets/web-config.yml:ro
+
+  alertmanager:
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--web.config.file=/etc/alertmanager/secrets/web-config.yml'
+    volumes:
+      - ./alertmanager-secrets/alertmanager.crt:/etc/ssl/certs/alertmanager.crt:ro
+      - ./alertmanager-secrets/alertmanager.key:/etc/ssl/private/alertmanager.key:ro
+      - ./alertmanager-web-config.yml:/etc/alertmanager/secrets/web-config.yml:ro
