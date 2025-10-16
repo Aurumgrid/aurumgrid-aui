@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  tor:
+    image: dperson/tor
+    container_name: tor
+    restart: unless-stopped
+    networks:
+      - snet
+
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: ipfs
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5001" # Expose API for local debugging
+    networks:
+      - snet
+    volumes:
+      - ipfs_data:/data/ipfs
+
+  bitcoin:
+    image: ruimarinho/bitcoin-core:22.0
+    container_name: bitcoin
+    restart: unless-stopped
+    volumes:
+      - ./bitcoin.conf:/home/bitcoin/.bitcoin/bitcoin.conf
+      - bitcoin_data:/home/bitcoin/.bitcoin
+    networks:
+      - snet
+
+  superstack:
+    build: .
+    container_name: superstack
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - snet
+    depends_on:
+      - tor
+      - ipfs
+      - bitcoin
+
+networks:
+  snet:
+    internal: true
+
+volumes:
+  ipfs_data:
+  bitcoin_data:
